@@ -1,0 +1,7 @@
+.banner-header{
+     position: relative;
+     
+     bottom: 5rem;
+     top: 50%; /* Di chuyển phần tử lên trên 50% của viewport */
+     left: 50%; /* Di chuyển phần tử sang trái 50% của viewport */
+}
