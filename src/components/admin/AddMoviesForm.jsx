@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const AddMoviesForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
-    title_movie: '',
+    titla_movie: '',
     description: '',
     status: '',
     image: '',
@@ -18,17 +19,26 @@ const AddMoviesForm = ({ onSubmit }) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
-    setFormData({
-      title_movie: '',
-      description: '',
-      status: '',
-      image: '',
-      year: '',
-      list_episodes: ''
-    });
+    try {
+      // Make POST request to backend API to add new genre
+      const response = await axios.post('http://localhost:5000/api/movies', formData);
+      console.log('Genre added successfully:', response.data);
+      // Call onSubmit prop function to handle further actions (e.g., updating state)
+      onSubmit(formData);
+      // Clear form data after successful submission
+      setFormData({
+        titla_movie: '',
+        description: '',
+        status: '',
+        image: '',
+        year: '',
+        list_episodes: ''
+      });
+    } catch (error) {
+      console.error('Error adding genre:', error);
+    }
   };
 
   return (
@@ -38,8 +48,8 @@ const AddMoviesForm = ({ onSubmit }) => {
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">Movie Title</label>
           <input
-            name="title_movie"
-            value={formData.title_movie}
+            name="titla_movive"
+            value={formData.titla_movive}
             onChange={handleChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="text"

@@ -65,9 +65,16 @@ const updateMovie = (req, res) => {
 const deleteMovie = (req, res) => {
   const { id } = req.params;
   const query = 'DELETE FROM movies WHERE id = ?';
+
   db.query(query, [id], (err, results) => {
     if (err) {
-      console.error('Error deleting movie:', err);
+      if (err.code) {
+        // Check if the error is a database error
+        console.error('Database error deleting movie:', err.message, 'Code:', err.code);
+      } else {
+        // Log any other type of error
+        console.error('Error deleting movie:', err);
+      }
       res.status(500).json({ error: 'Failed to delete movie' });
       return;
     }

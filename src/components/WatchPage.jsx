@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 function WatchPage() {
-    const { movieId } = useParams();
+    const { movieId, episodeId } = useParams();
+    const navigate = useNavigate();
     const [episodes, setEpisodes] = useState([]);
     const [videoSrc, setVideoSrc] = useState('');
 
@@ -17,17 +18,26 @@ function WatchPage() {
                 const sortedEpisodes = response.data.sort((a, b) => a.episode - b.episode);
                 setEpisodes(sortedEpisodes);
 
-                // Set default videoSrc to the first episode's linkphim
-                if (sortedEpisodes.length > 0) {
-                    const firstEpisode = sortedEpisodes[0];
-                    const defaultVideoSrc = extractYouTubeUrl(firstEpisode.linkphim);
-                    setVideoSrc(defaultVideoSrc);
+                // Set videoSrc based on episodeId if provided
+                if (episodeId) {
+                    const selectedEpisode = sortedEpisodes.find(ep => ep.episode === parseInt(episodeId));
+                    if (selectedEpisode) {
+                        const newVideoSrc = extractYouTubeUrl(selectedEpisode.linkphim);
+                        setVideoSrc(newVideoSrc);
+                    }
+                } else {
+                    // Set default videoSrc to the first episode's linkphim
+                    if (sortedEpisodes.length > 0) {
+                        const firstEpisode = sortedEpisodes[0];
+                        const defaultVideoSrc = extractYouTubeUrl(firstEpisode.linkphim);
+                        setVideoSrc(defaultVideoSrc);
+                    }
                 }
             })
             .catch(error => {
                 console.error('Error fetching episodes:', error);
             });
-    }, [movieId]);
+    }, [movieId, episodeId]);
 
     // Extract the YouTube video URL from the linkphim string
     const extractYouTubeUrl = (linkphim) => {
@@ -43,11 +53,7 @@ function WatchPage() {
 
     // Function to handle episode button click
     const handleEpisodeClick = (episodeNumber) => {
-        const selectedEpisode = episodes.find(ep => ep.episode === episodeNumber);
-        if (selectedEpisode) {
-            const newVideoSrc = extractYouTubeUrl(selectedEpisode.linkphim);
-            setVideoSrc(newVideoSrc);
-        }
+        navigate(`/watchPage/${movieId}/${episodeNumber}`);
     };
 
     // Render episode buttons dynamically based on the number of episodes
@@ -55,10 +61,11 @@ function WatchPage() {
         return episodes.map((episode) => (
             <button key={episode.id_episode} onClick={() => handleEpisodeClick(episode.episode)}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded m-1">
-                {episode.episode}
+                 {episode.episode}
             </button>
         ));
     };
+
 
     return (
         <div className="min-h-screen bg-gray-900 flex items-center justify-center">

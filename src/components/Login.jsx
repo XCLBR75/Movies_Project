@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './contexts/AuthContext'; // Import useAuth hook for authentication
+import { useAuth } from './contexts/AuthContext'; 
 
 function Login() {
   const { login } = useAuth(); // Destructure login function from useAuth hook

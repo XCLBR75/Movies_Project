@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const session = require('express-session'); // Import express-session
+const session = require('express-session'); 
 const movieRoutes = require('./routes/movieRoutes');
 const userRoutes = require('./routes/userRoutes');
 const episodeRoutes = require('./routes/episodeRoutes');

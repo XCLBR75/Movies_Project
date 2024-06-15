@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
-function MoviesGenre({ match }) {
+function MoviesGenre() {
     const { genreId } = useParams();
     const [movies, setMovies] = useState([]);
 
@@ -41,7 +41,7 @@ function MoviesGenre({ match }) {
                         <tr key={movie.id} className={index % 2 === 0 ? 'bg-gray-100' : ''}>
                             <td className="border border-gray-200 px-4 py-2">{index + 1}</td>
                             <td className="border border-gray-200 px-4 py-2">
-                                <Link to={`/watchPage/${movie.id}`} className="text-blue-500 hover:underline">{movie.titla_movive}</Link>
+                                <Link to={`/MovieDetail/${movie.id}`} className="text-blue-500 hover:underline">{movie.titla_movive}</Link>
                             </td>
                             <td className="border border-gray-200 px-4 py-2">{movie.year}</td>
                             <td className="border border-gray-200 px-4 py-2">{movie.list_episodes}</td>

@@ -7,7 +7,7 @@ function Movies() {
 
   useEffect(() => {
     // Configure base URL for Axios
-    axios.defaults.baseURL = 'http://localhost:5000'; // Assuming your backend server is running on port 5000
+    axios.defaults.baseURL = 'http://localhost:5000'; 
 
     // Fetch movies data from the backend API
     axios.get('/api/movies')
@@ -40,7 +40,7 @@ function Movies() {
         <tbody>
           {movies.map((movie, index) => (
             <tr key={movie.id} className={index % 2 === 0 ? 'bg-gray-100' : ''}>
-              <td className="border border-gray-200 px-4 py-2">{index + 1}</td>
+              <td className="border border-gray-200 px-4 py-2">{movie.id}</td>
               <td className="border border-gray-200 px-4 py-2 flex items-center">
                 <div className="w-12 h-16 bg-gray-200 mr-4">
                   {movie.image ? (
@@ -58,7 +58,7 @@ function Movies() {
                   )}
                 </div>
                 <div>
-                  <Link to={`/watchPage/${movie.id}`} className="text-blue-500 hover:underline">{movie.titla_movive}</Link>
+                  <Link to={`/MovieDetail/${movie.id}`} className="text-blue-500 hover:underline">{movie.titla_movive}</Link>
                 </div>
               </td>
               <td className="border border-gray-200 px-4 py-2">{movie.year}</td>

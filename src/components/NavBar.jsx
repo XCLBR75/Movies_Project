@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Logo from "../download.png";
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from './contexts/AuthContext'; // Import useAuth hook for authentication
+import { useAuth } from './contexts/AuthContext'; 
 
 function NavBar() {
   const { loggedIn, isAdmin, logout } = useAuth(); // Destructure loggedIn, isAdmin, and logout from useAuth hook

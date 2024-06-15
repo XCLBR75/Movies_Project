@@ -1,8 +1,6 @@
-// episodeRoutes.js
-
 const express = require('express');
 const router = express.Router();
-const episodeHandler = require('../handlers/episodeHandler'); // Import episodeHandler
+const episodeHandler = require('../handlers/episodeHandler'); 
 
 // Route to get all episodes
 router.get('/episodes', episodeHandler.getEpisodes);

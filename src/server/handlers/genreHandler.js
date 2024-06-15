@@ -45,6 +45,25 @@ const addGenre = (req, res) => {
     });
 };
 
+// Get genres by movie ID
+const getGenresByMovieId = (req, res) => {
+    const { movieId } = req.params;
+    const query = `
+        SELECT g.* 
+        FROM geners g
+        JOIN movie_genres mg ON g.id_geners = mg.gener_id
+        WHERE mg.movie_id = ?
+    `;
+    db.query(query, [movieId], (err, results) => {
+        if (err) {
+            console.error('Error fetching genres for movie:', err);
+            res.status(500).json({ error: 'Failed to fetch genres for movie' });
+            return;
+        }
+        res.json(results);
+    });
+};
+
 // Update a genre
 const updateGenre = (req, res) => {
     const { id } = req.params;
@@ -74,4 +93,20 @@ const deleteGenre = (req, res) => {
     });
 };
 
-module.exports = { getGenres, getGenreById, addGenre, updateGenre, deleteGenre };
+// Add a movie to a genre
+const addMovieToGenre = (req, res) => {
+    const { id_movie, id_geners } = req.body;
+    const query = 'INSERT INTO movie_genres (movie_genres_id, movie_id, gener_id) VALUES (?, ?, ?)';
+    const movie_genres_id = `${id_movie}-${id_geners}`;
+
+    db.query(query, [movie_genres_id, id_movie, id_geners], (err, results) => {
+        if (err) {
+            console.error('Error adding movie to genre:', err);
+            res.status(500).json({ error: 'Failed to add movie to genre' });
+            return;
+        }
+        res.status(201).json({ message: 'Movie added to genre', id: results.insertId });
+    });
+};
+
+module.exports = { getGenres, getGenreById, addGenre, updateGenre, deleteGenre, addMovieToGenre, getGenresByMovieId};

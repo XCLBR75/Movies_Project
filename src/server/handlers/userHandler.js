@@ -84,4 +84,37 @@ const checkAdmin = (req, res) => {
     });
 };
 
-module.exports = { registerUser, loginUser, checkLoggedIn, logoutUser, checkAdmin };
+// Fetch all users
+const getAllUsers = (req, res) => {
+    const query = 'SELECT * FROM users';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching users:', err);
+            res.status(500).json({ error: 'Failed to fetch users' });
+            return;
+        }
+        res.status(200).json(results); // Return all users as JSON
+    });
+};
+
+// Delete a user
+const deleteUser = (req, res) => {
+    const { id } = req.params;
+    const query = 'DELETE FROM users WHERE id_user = ?';
+    db.query(query, [id], (err, results) => {
+        if (err) {
+            if (err.code) {
+                // Check if the error is a database error
+                console.error('Database error deleting user:', err.message, 'Code:', err.code);
+            } else {
+                // Log any other type of error
+                console.error('Error deleting user:', err);
+            }
+            res.status(500).json({ error: 'Failed to delete user' });
+            return;
+        }
+        res.json({ message: 'User deleted' });
+    });
+};
+
+module.exports = { registerUser, loginUser, checkLoggedIn, logoutUser, checkAdmin, getAllUsers, deleteUser };

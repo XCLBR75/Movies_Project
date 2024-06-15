@@ -7,7 +7,7 @@ function Genres() {
 
   useEffect(() => {
     // Configure base URL for Axios
-    axios.defaults.baseURL = 'http://localhost:5000'; // Assuming your backend server is running on port 5000
+    axios.defaults.baseURL = 'http://localhost:5000'; 
 
     // Fetch genres data from the backend API
     axios.get('/api/genres')

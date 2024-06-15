@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // Import axios here
-import { Link } from 'react-router-dom'; // Import Link for navigation
+import axios from 'axios'; 
+import { Link } from 'react-router-dom'; 
 
 function SignUp() {
   const [username, setUsername] = useState('');
@@ -12,7 +12,7 @@ function SignUp() {
 
   const handleSignUp = async () => {
     // Configure base URL for Axios
-    axios.defaults.baseURL = 'http://localhost:5000'; // Assuming your backend server is running on port 5000
+    axios.defaults.baseURL = 'http://localhost:5000'; 
 
     try {
       const response = await axios.post('/signup', { username, password, email, phone });

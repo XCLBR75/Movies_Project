@@ -17,4 +17,10 @@ userRouter.get('/logout', userHandler.logoutUser);
 // Route to check if a user is an admin
 userRouter.get('/checkAdmin', userHandler.checkAdmin);
 
+// Route to get all users
+userRouter.get('/userlist', userHandler.getAllUsers);
+
+// Route to delete user
+userRouter.delete('/userlist/:id', userHandler.deleteUser);
+
 module.exports = userRouter;

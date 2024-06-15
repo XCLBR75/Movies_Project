@@ -1,5 +1,3 @@
-// episodeHandler.js
-
 const db = require('../db'); // Assuming you have a db.js file for database connection
 
 // Get all episodes
@@ -17,7 +15,7 @@ const getEpisodes = (req, res) => {
 
 // Get an episode by ID
 const getEpisodeById = (req, res) => {
-    const { id } = req.params;
+    const { id } = req.params; 
     const query = 'SELECT * FROM episodes WHERE id_episode = ?';
     db.query(query, [id], (err, results) => {
         if (err) {
@@ -33,19 +31,32 @@ const getEpisodeById = (req, res) => {
     });
 };
 
-// Add a new episode
+// Add an episode to a movie
 const addEpisode = (req, res) => {
     const { id_episode, linkphim, episode, movie_id } = req.body;
-    const query = 'INSERT INTO episodes (id_episode, linkphim, episode, movie_id) VALUES (?, ?, ?, ?)';
-    db.query(query, [id_episode, linkphim, episode, movie_id], (err, results) => {
+
+    const episodeQuery = 'INSERT INTO episodes (id_episode, linkphim, episode, movie_id) VALUES (?, ?, ?, ?)';
+    db.query(episodeQuery, [id_episode, linkphim, episode, movie_id], (err, results) => {
         if (err) {
             console.error('Error adding episode:', err);
             res.status(500).json({ error: 'Failed to add episode' });
             return;
         }
-        res.status(201).json({ message: 'Episode added', id: results.insertId });
+
+        // Successfully added episode, now update list_episodes in movies table
+        const updateQuery = 'UPDATE movies SET list_episodes = list_episodes + 1 WHERE id = ?';
+        db.query(updateQuery, [movie_id], (err, updateResult) => {
+            if (err) {
+                console.error('Error updating list_episodes:', err);
+                res.status(500).json({ error: 'Failed to update list_episodes' });
+                return;
+            }
+
+            res.status(201).json({ message: 'Episode added', id: results.insertId });
+        });
     });
 };
+
 
 // Update an episode
 const updateEpisode = (req, res) => {

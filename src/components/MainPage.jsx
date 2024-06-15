@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import Banner from './Banner'; // Import the Banner component
+import Banner from './Banner'; 
 
 function MainPage() {
     const [movies, setMovies] = useState([]);
 
     useEffect(() => {
         // Configure base URL for Axios
-        axios.defaults.baseURL = 'http://localhost:5000'; // Assuming your backend server is running on port 5000
+        axios.defaults.baseURL = 'http://localhost:5000'; 
 
         // Fetch movies data from the backend API
         axios.get('/api/movies')
