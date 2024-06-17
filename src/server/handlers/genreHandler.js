@@ -79,19 +79,31 @@ const updateGenre = (req, res) => {
     });
 };
 
-// Delete a genre
 const deleteGenre = (req, res) => {
     const { id } = req.params;
-    const query = 'DELETE FROM geners WHERE id_geners = ?';
-    db.query(query, [id], (err, results) => {
+
+    // First delete from movie_genres where genre_id matches
+    const deleteMovieGenresQuery = 'DELETE FROM movie_genres WHERE gener_id = ?';
+    db.query(deleteMovieGenresQuery, [id], (err, results) => {
         if (err) {
-            console.error('Error deleting genre:', err);
-            res.status(500).json({ error: 'Failed to delete genre' });
+            console.error('Error deleting from movie_genres:', err);
+            res.status(500).json({ error: 'Failed to delete associated movie genres' });
             return;
         }
-        res.json({ message: 'Genre deleted' });
+
+        // Then delete from genres where id matches
+        const deleteGenreQuery = 'DELETE FROM geners WHERE id_geners = ?';
+        db.query(deleteGenreQuery, [id], (err, results) => {
+            if (err) {
+                console.error('Error deleting genre:', err);
+                res.status(500).json({ error: 'Failed to delete genre' });
+                return;
+            }
+            res.json({ message: 'Genre deleted' });
+        });
     });
 };
+
 
 // Add a movie to a genre
 const addMovieToGenre = (req, res) => {

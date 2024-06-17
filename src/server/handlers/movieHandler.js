@@ -61,26 +61,78 @@ const updateMovie = (req, res) => {
   });
 };
 
-// Delete a movie
 const deleteMovie = (req, res) => {
   const { id } = req.params;
-  const query = 'DELETE FROM movies WHERE id = ?';
 
-  db.query(query, [id], (err, results) => {
+  // Queries to delete episodes, movie genres, and the movie
+  const deleteEpisodesQuery = 'DELETE FROM episodes WHERE movie_id = ?';
+  const deleteMovieGenresQuery = 'DELETE FROM movie_genres WHERE movie_id = ?';
+  const deleteMovieQuery = 'DELETE FROM movies WHERE id = ?';
+
+  // Begin a transaction
+  db.beginTransaction((err) => {
     if (err) {
-      if (err.code) {
-        // Check if the error is a database error
-        console.error('Database error deleting movie:', err.message, 'Code:', err.code);
-      } else {
-        // Log any other type of error
-        console.error('Error deleting movie:', err);
-      }
+      console.error('Error starting transaction:', err);
       res.status(500).json({ error: 'Failed to delete movie' });
       return;
     }
-    res.json({ message: 'Movie deleted' });
+
+    // Delete episodes first
+    db.query(deleteEpisodesQuery, [id], (err, results) => {
+      if (err) {
+        return db.rollback(() => {
+          if (err.code) {
+            console.error('Database error deleting episodes:', err.message, 'Code:', err.code);
+          } else {
+            console.error('Error deleting episodes:', err);
+          }
+          res.status(500).json({ error: 'Failed to delete movie' });
+        });
+      }
+
+      // Delete movie genres
+      db.query(deleteMovieGenresQuery, [id], (err, results) => {
+        if (err) {
+          return db.rollback(() => {
+            if (err.code) {
+              console.error('Database error deleting movie genres:', err.message, 'Code:', err.code);
+            } else {
+              console.error('Error deleting movie genres:', err);
+            }
+            res.status(500).json({ error: 'Failed to delete movie' });
+          });
+        }
+
+        // Delete the movie
+        db.query(deleteMovieQuery, [id], (err, results) => {
+          if (err) {
+            return db.rollback(() => {
+              if (err.code) {
+                console.error('Database error deleting movie:', err.message, 'Code:', err.code);
+              } else {
+                console.error('Error deleting movie:', err);
+              }
+              res.status(500).json({ error: 'Failed to delete movie' });
+            });
+          }
+
+          // Commit the transaction
+          db.commit((err) => {
+            if (err) {
+              return db.rollback(() => {
+                console.error('Error committing transaction:', err);
+                res.status(500).json({ error: 'Failed to delete movie' });
+              });
+            }
+
+            res.json({ message: 'Movie and related episodes and genres deleted' });
+          });
+        });
+      });
+    });
   });
 };
+
 
 // Get movies by genre
 const getMoviesByGenre = (req, res) => {
